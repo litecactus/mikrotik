@@ -8,7 +8,7 @@
 /interface bridge port add interface=ether7 bridge=bridge1
 /ip address add address=192.168.88.1/24 interface=bridge1
 /ip dhcp-server/ setup
-/interface pppoe-client
+/interface pppoe-out1
   add disabled=no interface=ether8 user=bthomehub@btbroadband.com password=password \
     add-default-route=yes use-peer-dns=yes
 /interface list add name=LAN
@@ -17,20 +17,27 @@
 /tool mac-server mac-winbox set allowed-interface-list=LAN
 /ip neighbor discovery-settings set discover-interface-list=LAN
 /user set 0 address=192.168.88.0/24
-/ip firewall filter
-  add chain=input action=accept connection-state=established,related,untracked comment="accept established,related,untracked"
-  add chain=input action=drop connection-state=invalid comment="drop invalid"
-  add chain=input in-interface=ether8 action=accept protocol=icmp comment="accept ICMP"
 /ip service disable telnet,ftp,www,api
 /ip service set winbox address=192.168.88.0/24
 /tool bandwidth-server set enabled=no
-/ip firewall nat
-  add chain=srcnat out-interface=pppoe-client action=masquerade
+/ip firewall nat add chain=srcnat out-interface=pppoe-out1 action=masquerade
 /ip firewall filter
-  add chain=forward action=fasttrack-connection connection-state=established,related \
-    comment="fast-track for established,related";
-  add chain=forward action=accept connection-state=established,related \
-    comment="accept established,related";
-  add chain=forward action=drop connection-state=invalid
-  add chain=forward action=drop connection-state=new connection-nat-state=!dstnat \
-    in-interface=ether8 comment="drop access to clients behind NAT from WAN"
+# INPUT CHAIN - Handles traffic destined for the router itself
+add chain=input action=accept connection-state=established,related,untracked comment="Accept established, related, untracked connections"
+add chain=input action=accept protocol=icmp comment="Accept ICMP"
+add chain=input action=drop connection-state=invalid comment="Drop invalid connections"
+add chain=input action=drop in-interface=ether8 comment="Drop all other traffic on WAN interface"
+
+# FORWARD CHAIN - Handles traffic passing through the router
+add chain=forward action=fasttrack-connection connection-state=established,related comment="Fasttrack for established, related connections"
+add chain=forward action=accept connection-state=established,related comment="Accept established, related connections"
+add chain=forward action=drop connection-state=invalid comment="Drop invalid connections"
+add chain=forward action=drop connection-state=new connection-nat-state=!dstnat in-interface=ether8 comment="Drop traffic from WAN to LAN not NATed"
+
+# OUTPUT CHAIN - Handles traffic originating from the router itself (usually less restrictive)
+add chain=output action=accept connection-state=established,related comment="Accept established, related connections"
+add chain=output action=drop connection-state=invalid comment="Drop invalid connections"
+
+# Logging - For troubleshooting and monitoring
+add chain=input action=log log-prefix="INPUT DROP: " comment="Log dropped INPUT traffic"
+add chain=forward action=log log-prefix="FORWARD DROP: " comment="Log dropped FORWARD traffic"
