@@ -1,3 +1,4 @@
+# SETUP LAN
 /interface bridge add name=bridge1
 /interface bridge port add interface=ether1 bridge=bridge1
 /interface bridge port add interface=ether2 bridge=bridge1
@@ -8,6 +9,8 @@
 /interface bridge port add interface=ether7 bridge=bridge1
 /ip address add address=192.168.88.1/24 interface=bridge1
 /ip dhcp-server/ setup
+
+# SETUP WAN
 /interface pppoe-out1
   add disabled=no interface=ether8 user=bthomehub@btbroadband.com password=password \
     add-default-route=yes use-peer-dns=yes
