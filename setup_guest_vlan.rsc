@@ -1,3 +1,8 @@
+### A standard setup for a Guest VLAN on LAN bridge1
+### Called via main MikroTik script or can be run manually after setup or "quickset"
+### Guest VLAN 101 - allows tagged traffic from an access point 
+### NO ACCESS TO LAN, FULL ACCESS TO INTERNET - suitable for IOT devices
+
 ### 1. Create VLAN Interface for Guest VLAN on Bridge
 /interface vlan add name=vlan101_guest vlan-id=101 interface=bridge1
 

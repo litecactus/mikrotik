@@ -27,16 +27,17 @@
 /ip firewall nat add chain=srcnat out-interface=pppoe-out1 action=masquerade
 
 ### FIREWALL INPUT CHAIN - Handles traffic destined for the router itself
+/ip firewall filter add chain=input action=drop connection-state=invalid comment="Drop invalid connections"
+/ip firewall filter add chain=input action=drop in-interface=pppoe-out1 comment="Drop all other traffic on WAN interface"
 /ip firewall filter add chain=input action=accept connection-state=established,related,untracked comment="Accept established, related, untracked connections"
 /ip firewall filter add chain=input action=accept protocol=icmp comment="Accept ICMP"
-/ip firewall filter add chain=input action=drop connection-state=invalid comment="Drop invalid connections"
-/ip firewall filter add chain=input action=drop in-interface=ether8 comment="Drop all other traffic on WAN interface"
+/ip firewall filter add chain=input action=accept dst-address=127.0.0.1 comment="Accept to local loopback (for CAPsMAN)"
 
 ### FIREWALL FORWARD CHAIN - Handles traffic passing through the router
 /ip firewall filter add chain=forward action=fasttrack-connection connection-state=established,related comment="Fasttrack for established, related connections"
 /ip firewall filter add chain=forward action=accept connection-state=established,related comment="Accept established, related connections"
 /ip firewall filter add chain=forward action=drop connection-state=invalid comment="Drop invalid connections"
-/ip firewall filter add chain=forward action=drop connection-state=new connection-nat-state=!dstnat in-interface=ether8 comment="Drop traffic from WAN to LAN not NATed"
+/ip firewall filter add chain=forward action=drop connection-state=new connection-nat-state=!dstnat in-interface=pppoe-out1 comment="Drop traffic from WAN to LAN not NATed"
 
 ### FIREWALL OUTPUT CHAIN - Handles traffic originating from the router itself (usually less restrictive)
 /ip firewall filter add chain=output action=accept connection-state=established,related comment="Accept established, related connections"
@@ -54,6 +55,14 @@
 /ip neighbor discovery-settings set discover-interface-list=LAN
 
 # Configure User and Services
-/ip service disable telnet,ftp,www,api
+/ip service disable telnet,ftp,www,api,ssh
 /ip service set winbox address=192.168.88.0/24
 /tool bandwidth-server set enabled=no
+
+### SETUP GUEST VLAN
+# Comment out if you don't need a guest VLAN
+/import setup_guest_vlan.rsc
+
+### SETUP CAPSMAN
+# Comment out if you don't need wifi via capsman
+/import setup_capsman_private.rsc
