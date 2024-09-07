@@ -3,7 +3,7 @@
 /system ntp client set enabled=yes servers=0.uk.pool.ntp.org
 
 ### LAN Create and configure bridge
-/interface bridge add name=bridge1
+/interface bridge add name=bridge1 auto-mac=no
 /ip address add address=192.168.88.1/24 interface=bridge1
 /interface bridge port add interface=ether1 bridge=bridge1
 /interface bridge port add interface=ether2 bridge=bridge1
