@@ -24,6 +24,7 @@
 ### WAN PPPoE Client - UK BT Broadband username and password already set, change for your PPPoE details
 # Change interface=ether8 to interface=ether5 for a hEX
 /interface pppoe-client add name=pppoe-out1 disabled=no interface=ether8 user=bthomehub@btbroadband.com password=password add-default-route=yes use-peer-dns=yes
+/ip firewall nat add chain=srcnat out-interface=pppoe-out1 action=masquerade
 
 ### FIREWALL INPUT CHAIN - Handles traffic destined for the router itself
 /ip firewall filter add chain=input action=accept connection-state=established,related,untracked comment="Accept established, related, untracked connections"
