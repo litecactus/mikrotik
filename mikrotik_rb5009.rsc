@@ -14,7 +14,7 @@
 /interface bridge port add interface=ether6 bridge=bridge1
 /interface bridge port add interface=ether7 bridge=bridge1
 
-### DHCP and DNS Setup on 88.0 network with Quad9 and Cloudflare DNS servers
+### DHCP and DNS Setup on 88.0 network with Quad9 and Cloudflare anti-malware DNS servers
 /ip pool add name=dhcp_pool ranges=192.168.88.10-192.168.88.254
 /ip dhcp-server network add address=192.168.88.0/24 gateway=192.168.88.1 dns-server=1.1.1.2,9.9.9.9
 /ip dns set servers=1.1.1.2,9.9.9.9 allow-remote-requests=yes
@@ -62,6 +62,10 @@
 ### SETUP GUEST VLAN
 # Comment out if you don't need a guest VLAN
 /import setup_guest_vlan.rsc
+
+### SETUP DMZ VLAN
+# Comment out if you don't need a guest VLAN
+/import setup_DMZ_vlan.rsc
 
 ### SETUP CAPSMAN
 # Comment out if you don't need wifi via capsman
