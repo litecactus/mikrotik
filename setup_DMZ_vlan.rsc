@@ -16,3 +16,6 @@
 
 # NAT for DMZ
 /ip firewall nat add chain=srcnat out-interface=pppoe-out1 action=masquerade src-address=192.168.99.0/24 comment="NAT for DMZ VLAN"
+
+### Add a simple Queue for DMZ (FTTP speeds) with highest priority
+/queue simple add comment="The DMZ Network" max-limit=120M/900M name=DMZQ priority=1/1 target=vlan99_dmz

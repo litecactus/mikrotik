@@ -70,3 +70,6 @@
 ### SETUP CAPSMAN
 # Comment out if you don't need wifi via capsman
 /import setup_capsman_private.rsc
+
+### Add a simple Queue for LAN (FTTP speeds) medium priority
+/queue simple add comment="My Network" max-limit=120M/900M name=LANQ priority=5/5 target=192.168.88.0/24

@@ -16,3 +16,6 @@
 /ip firewall filter add chain=forward action=drop in-interface=vlan101_guest out-interface=bridge1 comment="Drop Guest VLAN access to main LAN"
 /ip firewall filter add chain=forward action=drop connection-state=invalid in-interface=vlan101_guest comment="Drop invalid connections from Guest VLAN"
 /ip firewall nat add chain=srcnat out-interface=pppoe-out1 action=masquerade src-address=192.168.101.0/24 comment="NAT for Guest VLAN"
+
+### Add a simple Queue for Guest Network (100M speeds) lowest priority
+/queue simple add comment="The Guest Network" max-limit=100M/100M name=GUESTQ target=vlan101_guest priority=8/8
