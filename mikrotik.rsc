@@ -28,7 +28,6 @@
 
 ### FIREWALL INPUT CHAIN - Handles traffic destined for the router itself
 /ip firewall filter add chain=input action=drop connection-state=invalid comment="Drop invalid connections"
-/ip firewall filter add chain=input action=drop in-interface=pppoe-out1 comment="Drop all other traffic on WAN interface"
 /ip firewall filter add chain=input action=accept connection-state=established,related,untracked comment="Accept established, related, untracked connections"
 /ip firewall filter add chain=input action=accept protocol=icmp comment="Accept ICMP"
 /ip firewall filter add chain=input action=accept dst-address=127.0.0.1 comment="Accept to local loopback (for CAPsMAN)"
@@ -46,6 +45,9 @@
 ### FIREWALL Logging - For troubleshooting and monitoring
 /ip firewall filter add chain=input action=log log-prefix="INPUT DROP: " comment="Log dropped INPUT traffic"
 /ip firewall filter add chain=forward action=log log-prefix="FORWARD DROP: " comment="Log dropped FORWARD traffic"
+
+/ip firewall filter add chain=input action=drop in-interface=pppoe-out1 comment="Drop all other traffic on WAN interface"
+
 
 ### Configure Interface List and MAC Server
 /interface list add name=LAN
