@@ -13,6 +13,9 @@
 /interface bridge port add interface=ether5 bridge=bridge1
 /interface bridge port add interface=ether6 bridge=bridge1
 /interface bridge port add interface=ether7 bridge=bridge1
+# Comment these out if your Router doesn't have SFP+
+/interface bridge port add interface=sfp-sfpplus1 bridge=bridge1
+#/interface bridge port add interface=sfp-sfpplus2 bridge=bridge1
 
 ### DHCP and DNS Setup on 88.0 network with Quad9 and Cloudflare anti-malware DNS servers
 /ip pool add name=dhcp_pool ranges=192.168.88.10-192.168.88.254
