@@ -15,7 +15,8 @@ add bridge=bridge comment=net interface=ether6
 add bridge=bridge comment=dmz interface=ether7 pvid=99
 add bridge=bridge comment=dmz interface=ether8 pvid=99
 add bridge=bridge comment=trunk interface=sfp-sfpplus1
-add bridge=bridge comment=trunk interface=sfp-sfpplus2
+# Path cost specifically set for my network topology, you might want to comment that bit out
+add bridge=bridge comment=trunk interface=sfp-sfpplus2 path-cost=8010
 
 
 /interface bridge vlan
@@ -28,8 +29,8 @@ add address=192.168.88.2/24 comment=defconf interface=bridge network=192.168.88.
 add address=192.168.101.2/24 comment=guest interface=vlan101 network=192.168.101.0
 add address=192.168.99.2/24 comment=dmz interface=vlan99 network=192.168.99.0
 /ip dns set servers=192.168.88.1
+/ip route add disabled=no dst-address=0.0.0.0/0 gateway=192.168.88.1 routing-table=main suppress-hw-offload=no
 
-### Set timezone and NTP for UK
 /system clock set time-zone-name=Europe/London
 /system ntp client set enabled=yes servers=0.uk.pool.ntp.org
 /system ntp client servers add address=1.uk.pool.ntp.org
